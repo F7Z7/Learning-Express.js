@@ -5,13 +5,13 @@ const products = require('./products');
 
 // Route: Home
 app.get('/', (req, res) => {
-    res.status(200).json({ products: products });
+    res.status(200).json({products: products});
 });
 
 // Route: Filter Products
 app.get('/products', (req, res) => {
     let filteredProducts = products;
-    const { category, maxPrice } = req.query;
+    const {category, maxPrice} = req.query;
 
     // Filter by category if provided
     if (category) {
@@ -34,20 +34,26 @@ app.get('/products', (req, res) => {
             products: filteredProducts
         });
     } else {
-        res.status(404).json({ message: "No matching products found." });
+        res.status(404).json({message: "No matching products found."});
     }
 });
 app.use(express.json())
-app.post('/:products',(req,res)=>{
-    const newproduct = req.body;
-    if(!newproduct.name||!newproduct.price||!newproduct.category){
-        res.status(404).json({ message: `the product is invalid` });
+app.post('/products', (req, res) => {
+    const {name,price,category} = req.body;
+    if (!name || !price || !category) {
+        res.status(404).json({message: `the product is invalid`});
     }
-    else{
-            newproduct.id=products.length+1
-        products.push(newproduct)
-        res.status(201).json({message: `The product ${newproduct.name} has been added`});
-    }
+    const newproduct = {
+        id: products.length + 1,
+        name,
+        price,
+        category
+    };
+
+
+    products.push(newproduct)
+    res.status(201).json({message: `The product ${newproduct.name} has been added`});
+
 })
 // Start server
 app.listen(port, () => {
