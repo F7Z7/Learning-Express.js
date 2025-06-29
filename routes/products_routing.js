@@ -1,15 +1,15 @@
-const port = 3000;
-const express = require('express');
-const app = express();
-const products = require('./products');
+const express = require("express");
+const router = express.Router();
+
+const products = require("../data/products");
 
 // Route: Home
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
     res.status(200).json({products: products});
 });
 
 // Route: Filter Products
-app.get('/products', (req, res) => {
+router.get('/products', (req, res) => {
     let filteredProducts = products;
     const {category, maxPrice} = req.query;
 
@@ -37,8 +37,8 @@ app.get('/products', (req, res) => {
         res.status(404).json({message: "No matching products found."});
     }
 });
-app.use(express.json())
-app.post('/products', (req, res) => {
+
+router.post('/products', (req, res) => {
     const {name,price,category} = req.body;
     if (!name || !price || !category) {
         res.status(404).json({message: `the product is invalid`});
@@ -55,7 +55,5 @@ app.post('/products', (req, res) => {
     res.status(201).json({message: `The product ${newproduct.name} has been added`});
 
 })
-// Start server
-app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
-});
+
+module.exports = router;
